@@ -1,4 +1,4 @@
-/*
+ /*
   Laboratorio 7
 
   Miguel García  
@@ -10,9 +10,11 @@
 
 #include <SPI.h>
 #include <SD.h>
+#include <SoftwareSerial.h>
 
-File myFile;
-
+File root;
+char a;
+int cont = 1;
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
@@ -20,27 +22,46 @@ void setup() {
     ; // wait for serial port to connect. Needed for native USB port only
   }
 
-  Serial.print("Initializing SD card...");
+  Serial.println("INICIANDO SD DE MIGUEL");
 
   if (!SD.begin(10)) {
-    Serial.println("initialization failed!");
+    Serial.println("FALLO INICIALIZACIÓN");
     while (1);
   }
-  Serial.println("initialization done.");
-
-
-
+  Serial.println("INICIALIZACIÓN COMPLETA");
+  Serial.println("");
+  mostrar_arch();
 
 }
-
 void loop() {
   // put your main code here, to run repeatedly:
+  
+  while(!Serial.available()){
+  }
+  
+  a = Serial.read();
+  Serial.print("Su opción es:");
+  Serial.print("\t");
+  Serial.println(a);
+  delay(1000);
+
 
 }
 
 
+void leer_arch(char a){
+  
+}
 
 
+void mostrar_arch(void){
+  root = SD.open("/");
+  Serial.println("---------------------------------------------");
+  Serial.println("NOMBRE                TAMAÑO         NÚMERO |");
+  Serial.println("---------------------------------------------");
+  printDirectory(root, 0);
+  Serial.println("---------------------------------------------");
+}
 
 void printDirectory(File dir, int numTabs) {
   while (true) {
@@ -51,7 +72,7 @@ void printDirectory(File dir, int numTabs) {
       break;
     }
     for (uint8_t i = 0; i < numTabs; i++) {
-      Serial.print('\t');
+      //Serial.print('\t');
     }
     Serial.print(entry.name());
     if (entry.isDirectory()) {
@@ -60,7 +81,9 @@ void printDirectory(File dir, int numTabs) {
     } else {
       // files have sizes, directories do not
       Serial.print("\t\t");
-      Serial.println(entry.size(), DEC);
+      Serial.print(entry.size(), DEC);
+      Serial.print("\t\t");
+      Serial.println(cont++);
     }
     entry.close();
   }
